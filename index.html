@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CurateAI Widget - Dev Harness</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 40px;
+      background: #f0f0f0;
+      color: #333;
+    }
+    h1 { margin-bottom: 8px; }
+    p { color: #666; max-width: 600px; }
+    .controls { margin-top: 24px; display: flex; gap: 8px; flex-wrap: wrap; }
+    .controls button {
+      padding: 8px 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fff;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .controls button:hover { background: #f5f5f5; }
+  </style>
+</head>
+<body>
+  <h1>CurateAI Widget Dev Harness</h1>
+  <p>The widget should appear as a floating bubble in the bottom-right corner. Use the controls below to test the programmatic API.</p>
+
+  <div class="controls">
+    <button onclick="CurateAI.open()">Open</button>
+    <button onclick="CurateAI.close()">Close</button>
+    <button onclick="CurateAI.toggle()">Toggle</button>
+    <button onclick="CurateAI.sendMessage('I have dry skin')">Send Test Message</button>
+    <button onclick="CurateAI.destroy()">Destroy</button>
+  </div>
+
+  <script>
+    window.CurateAIConfig = {
+      apiUrl: 'http://localhost:8000',
+    };
+  </script>
+  <script type="module" src="/src/index.ts"></script>
+</body>
+</html>

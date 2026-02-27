@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CurateAI Widget - Test Page (Dark)</title>
+  <style>
+    body {
+      background: #1a1a2e;
+      color: #e0e0e0;
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      padding: 40px;
+    }
+    h1 { color: #fff; }
+    p { color: #ccc; max-width: 600px; }
+    .card {
+      background: #16213e;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+    }
+    pre { color: #7ec8e3; }
+    /* Aggressive overrides */
+    * { box-sizing: content-box !important; }
+    button { font-size: 32px !important; padding: 20px !important; }
+    input { height: 60px !important; font-size: 28px !important; }
+  </style>
+</head>
+<body>
+  <h1>Dark Theme Isolation Test</h1>
+  <p>This page has a dark background and aggressive style overrides (huge buttons/inputs). The widget should remain unaffected.</p>
+
+  <div class="card">
+    <h3>Config: Dark-friendly theme</h3>
+    <pre>{
+  apiUrl: 'http://localhost:8000',
+  primaryColor: '#22c55e',
+  accentColor: '#f472b6',
+  backgroundColor: '#1e293b',
+  assistantBubbleColor: '#334155',
+  textColor: '#f1f5f9',
+  textSecondaryColor: '#94a3b8',
+  position: 'bottom-left'
+}</pre>
+  </div>
+
+  <script>
+    window.CurateAIConfig = {
+      apiUrl: 'http://localhost:8000',
+      primaryColor: '#22c55e',
+      accentColor: '#f472b6',
+      backgroundColor: '#1e293b',
+      assistantBubbleColor: '#334155',
+      textColor: '#f1f5f9',
+      textSecondaryColor: '#94a3b8',
+      position: 'bottom-left',
+    };
+  </script>
+  <script src="../dist/curateai-widget.js"></script>
+</body>
+</html>
