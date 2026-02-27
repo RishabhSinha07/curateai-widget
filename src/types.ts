@@ -39,6 +39,12 @@ export interface CurateAIWidgetConfig {
   authToken?: string;
   getAuthToken?: () => Promise<string> | string;
 
+  // Cognito (built-in auth)
+  cognitoUserPoolId?: string;
+  cognitoClientId?: string;
+  cognitoRegion?: string;
+  requireAuth?: boolean;
+
   // Theme
   primaryColor: string;
   accentColor: string;

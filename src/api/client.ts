@@ -2,9 +2,11 @@ import type { ChatResponse, CurateAIWidgetConfig } from '../types';
 
 export class CurateAIClient {
   private config: CurateAIWidgetConfig;
+  private getCognitoToken: (() => Promise<string | null>) | null;
 
-  constructor(config: CurateAIWidgetConfig) {
+  constructor(config: CurateAIWidgetConfig, getCognitoToken?: () => Promise<string | null>) {
     this.config = config;
+    this.getCognitoToken = getCognitoToken || null;
   }
 
   async sendMessage(message: string, sessionId: string | null): Promise<ChatResponse> {
@@ -12,9 +14,14 @@ export class CurateAIClient {
       'Content-Type': 'application/json',
     };
 
-    // Resolve auth token
-    const token = this.config.authToken
-      || (this.config.getAuthToken ? await this.config.getAuthToken() : null);
+    // Token priority: static authToken → getAuthToken callback → built-in Cognito token
+    let token: string | null = this.config.authToken || null;
+    if (!token && this.config.getAuthToken) {
+      token = (await this.config.getAuthToken()) || null;
+    }
+    if (!token && this.getCognitoToken) {
+      token = await this.getCognitoToken();
+    }
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }

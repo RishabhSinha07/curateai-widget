@@ -39,7 +39,7 @@ const DEFAULTS: Omit<CurateAIWidgetConfig, 'apiUrl'> = {
 /** Parse data-* attributes from the widget script tag */
 function parseDataAttributes(script: HTMLScriptElement): Partial<CurateAIWidgetConfig> {
   const config: Record<string, unknown> = {};
-  const booleans = new Set(['openOnLoad', 'persistSession', 'showPoweredBy']);
+  const booleans = new Set(['openOnLoad', 'persistSession', 'showPoweredBy', 'requireAuth']);
   const numbers = new Set(['offsetX', 'offsetY', 'zIndex', 'width', 'height', 'bubbleSize', 'borderRadius']);
 
   for (const attr of Array.from(script.attributes)) {
@@ -83,6 +83,17 @@ export function resolveConfig(): CurateAIWidgetConfig {
 
   if (!merged.apiUrl) {
     console.error('[CurateAI] apiUrl is required. Set data-api-url or window.CurateAIConfig.apiUrl');
+  }
+
+  // Derive cognitoRegion from userPoolId if not explicitly set
+  if (merged.cognitoUserPoolId && !merged.cognitoRegion) {
+    const match = merged.cognitoUserPoolId.match(/^([a-z]+-[a-z]+-\d+)_/);
+    if (match) merged.cognitoRegion = match[1];
+  }
+
+  // Default requireAuth to true when cognito config is present
+  if (merged.requireAuth === undefined && merged.cognitoUserPoolId && merged.cognitoClientId) {
+    merged.requireAuth = true;
   }
 
   return merged;

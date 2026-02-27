@@ -14,11 +14,13 @@ interface ChatWindowProps {
   onClose: () => void;
   pendingMessage: string | null;
   onPendingConsumed: () => void;
+  onSignOut?: () => void;
+  getCognitoToken?: () => Promise<string | null>;
 }
 
-export function ChatWindow({ isClosing, onClose, pendingMessage, onPendingConsumed }: ChatWindowProps) {
+export function ChatWindow({ isClosing, onClose, pendingMessage, onPendingConsumed, onSignOut, getCognitoToken }: ChatWindowProps) {
   const config = useConfig();
-  const { messages, isLoading, error, sendMessage, clearChat } = useChat(config);
+  const { messages, isLoading, error, sendMessage, clearChat } = useChat(config, getCognitoToken);
 
   // Handle programmatic sendMessage
   useEffect(() => {
@@ -32,7 +34,7 @@ export function ChatWindow({ isClosing, onClose, pendingMessage, onPendingConsum
 
   return (
     <div class={`cai-window ${isClosing ? 'cai-closing' : ''}`}>
-      <ChatHeader onClose={onClose} />
+      <ChatHeader onClose={onClose} onSignOut={onSignOut} />
 
       {!hasMessages && !isLoading ? (
         <WelcomeScreen />

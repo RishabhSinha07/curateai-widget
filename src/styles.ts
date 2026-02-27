@@ -581,6 +581,145 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     }
     .cai-powered a:hover { opacity: 1; }
 
+    /* ---- Login Screen ---- */
+    .cai-login {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 32px 24px 24px;
+      overflow-y: auto;
+    }
+    .cai-login-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .cai-login-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: ${primaryColor}15;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .cai-login-icon svg {
+      width: 28px;
+      height: 28px;
+      stroke: ${primaryColor};
+      fill: none;
+      stroke-width: 1.5;
+    }
+    .cai-login-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: ${textColor};
+      margin-bottom: 6px;
+    }
+    .cai-login-subtitle {
+      font-size: 13px;
+      color: ${textSecondaryColor};
+      line-height: 1.5;
+    }
+    .cai-login-tabs {
+      display: flex;
+      gap: 4px;
+      background: rgba(0,0,0,0.04);
+      border-radius: 10px;
+      padding: 3px;
+      margin-bottom: 20px;
+    }
+    .cai-login-tab {
+      flex: 1;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      font-family: ${fontFamily};
+      font-size: 13px;
+      font-weight: 600;
+      color: ${textSecondaryColor};
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cai-login-tab.cai-active {
+      background: ${assistantBubbleColor};
+      color: ${primaryColor};
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .cai-login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .cai-login-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid rgba(0,0,0,0.1);
+      border-radius: 10px;
+      font-family: ${fontFamily};
+      font-size: 14px;
+      color: ${textColor};
+      background: ${assistantBubbleColor};
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .cai-login-input:focus {
+      border-color: ${primaryColor};
+    }
+    .cai-login-input::placeholder {
+      color: ${textSecondaryColor};
+      opacity: 0.6;
+    }
+    .cai-login-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: ${headerGradient};
+      color: #fff;
+      font-family: ${fontFamily};
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.15s;
+      margin-top: 4px;
+    }
+    .cai-login-btn:hover { opacity: 0.9; }
+    .cai-login-btn:active { transform: scale(0.98); }
+    .cai-login-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .cai-login-error {
+      padding: 10px 14px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      color: #b91c1c;
+      font-size: 13px;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    /* ---- Header Sign Out ---- */
+    .cai-header-signout {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+      flex-shrink: 0;
+    }
+    .cai-header-signout:hover { background: rgba(255,255,255,0.25); }
+    .cai-header-signout svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2; }
+
     /* ---- Mobile Responsive ---- */
     @media (max-width: 448px) {
       .cai-window {

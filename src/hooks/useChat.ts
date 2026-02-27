@@ -3,7 +3,7 @@ import { CurateAIClient } from '../api/client';
 import { loadSession, saveSession, clearSession } from '../api/session';
 import type { Message, CurateAIWidgetConfig } from '../types';
 
-export function useChat(config: CurateAIWidgetConfig) {
+export function useChat(config: CurateAIWidgetConfig, getCognitoToken?: () => Promise<string | null>) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -11,12 +11,12 @@ export function useChat(config: CurateAIWidgetConfig) {
     config.persistSession ? loadSession(config.apiUrl) : null
   );
 
-  const clientRef = useRef<CurateAIClient>(new CurateAIClient(config));
+  const clientRef = useRef<CurateAIClient>(new CurateAIClient(config, getCognitoToken));
 
   // Keep client in sync if config changes
   useEffect(() => {
-    clientRef.current = new CurateAIClient(config);
-  }, [config]);
+    clientRef.current = new CurateAIClient(config, getCognitoToken);
+  }, [config, getCognitoToken]);
 
   const sendMessage = useCallback(async (content: string) => {
     if (!content.trim() || isLoading) return;

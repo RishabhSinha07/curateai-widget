@@ -1,8 +1,11 @@
 import { h } from 'preact';
 import { useState, useCallback, useEffect } from 'preact/hooks';
 import { ConfigContext } from '../hooks/useConfig';
+import { useAuth } from '../hooks/useAuth';
 import { ChatBubble } from './ChatBubble';
 import { ChatWindow } from './ChatWindow';
+import { LoginScreen } from './LoginScreen';
+import { ChatHeader } from './ChatHeader';
 import type { CurateAIWidgetConfig, CurateAIPublicAPI } from '../types';
 
 interface WidgetRootProps {
@@ -14,6 +17,11 @@ export function WidgetRoot({ config, onApiReady }: WidgetRootProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [pendingMessage, setPendingMessage] = useState<string | null>(null);
+
+  const hasCognitoAuth = !!(config.cognitoUserPoolId && config.cognitoClientId && config.cognitoRegion);
+  const auth = useAuth(config);
+
+  const needsLogin = hasCognitoAuth && config.requireAuth && !auth.isAuthenticated && !auth.isLoading;
 
   const open = useCallback(() => {
     setIsOpen(true);
@@ -59,12 +67,29 @@ export function WidgetRoot({ config, onApiReady }: WidgetRootProps) {
     <ConfigContext.Provider value={config}>
       <div class={`cai-container ${positionClass}`}>
         {isOpen && (
-          <ChatWindow
-            isClosing={isClosing}
-            onClose={close}
-            pendingMessage={pendingMessage}
-            onPendingConsumed={() => setPendingMessage(null)}
-          />
+          needsLogin ? (
+            <div class={`cai-window ${isClosing ? 'cai-closing' : ''}`}>
+              <ChatHeader onClose={close} />
+              <LoginScreen
+                isLoading={auth.isLoading}
+                error={auth.error}
+                needsConfirmation={auth.needsConfirmation}
+                onSignIn={auth.signIn}
+                onSignUp={auth.signUp}
+                onConfirm={auth.confirmSignUp}
+                onClearError={auth.clearError}
+              />
+            </div>
+          ) : (
+            <ChatWindow
+              isClosing={isClosing}
+              onClose={close}
+              pendingMessage={pendingMessage}
+              onPendingConsumed={() => setPendingMessage(null)}
+              onSignOut={hasCognitoAuth ? auth.signOut : undefined}
+              getCognitoToken={hasCognitoAuth ? auth.getToken : undefined}
+            />
+          )
         )}
         <ChatBubble isOpen={isOpen} onClick={toggle} />
       </div>
