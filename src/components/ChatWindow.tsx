@@ -37,7 +37,7 @@ export function ChatWindow({ isClosing, onClose, pendingMessage, onPendingConsum
       <ChatHeader onClose={onClose} onSignOut={onSignOut} />
 
       {!hasMessages && !isLoading ? (
-        <WelcomeScreen />
+        <WelcomeScreen onTopicClick={sendMessage} />
       ) : (
         <MessageList messages={messages} isLoading={isLoading} onQuickReply={sendMessage} />
       )}

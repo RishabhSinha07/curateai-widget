@@ -1,17 +1,17 @@
 import type { CurateAIWidgetConfig } from './types';
 
 const DEFAULTS: Omit<CurateAIWidgetConfig, 'apiUrl'> = {
-  // Theme
-  primaryColor: '#7fa389',
-  accentColor: '#e38b75',
-  backgroundColor: '#f5f3f7',
-  userBubbleColor: '',       // derived from accentColor gradient if empty
-  assistantBubbleColor: '#ffffff',
-  textColor: '#2d2d2d',
-  textSecondaryColor: '#6b6b6b',
+  // Theme — dark futuristic with emerald/teal accents
+  primaryColor: '#10b981',
+  accentColor: '#10b981',
+  backgroundColor: '#0b1015',
+  userBubbleColor: '',       // derived as teal gradient if empty
+  assistantBubbleColor: 'rgba(255,255,255,0.06)',
+  textColor: '#e2e8f0',
+  textSecondaryColor: '#94a3b8',
   fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
   borderRadius: 16,
-  headerGradient: '',        // derived from primaryColor if empty
+  headerGradient: '',        // derived as dark glass gradient if empty
 
   // Layout
   position: 'bottom-right',
@@ -23,12 +23,12 @@ const DEFAULTS: Omit<CurateAIWidgetConfig, 'apiUrl'> = {
   bubbleSize: 60,
 
   // Content
-  title: 'CurateAI',
+  title: 'Noeticex',
   subtitle: 'Your personal wellness guide',
-  welcomeMessage: 'Hi! I can help you find the right wellness products. What are you looking for today?',
-  placeholder: 'Type your message...',
-  poweredByText: 'Powered by CurateAI',
-  poweredByUrl: 'https://curateai.com',
+  welcomeMessage: 'Hi there!',
+  placeholder: 'What is on your mind?',
+  poweredByText: 'Powered by Noeticex',
+  poweredByUrl: 'https://noeticex.com',
 
   // Behavior
   openOnLoad: false,
@@ -75,14 +75,14 @@ export function resolveConfig(): CurateAIWidgetConfig {
 
   // Derive defaults for gradient fields if not set
   if (!merged.userBubbleColor) {
-    merged.userBubbleColor = `linear-gradient(135deg, ${lighten(merged.accentColor, 15)}, ${merged.accentColor})`;
+    merged.userBubbleColor = `linear-gradient(135deg, #10b981, #059669)`;
   }
   if (!merged.headerGradient) {
-    merged.headerGradient = `linear-gradient(135deg, ${merged.primaryColor}, ${darken(merged.primaryColor, 15)})`;
+    merged.headerGradient = `linear-gradient(135deg, rgba(16,185,129,0.15), rgba(5,150,105,0.08))`;
   }
 
   if (!merged.apiUrl) {
-    console.error('[CurateAI] apiUrl is required. Set data-api-url or window.CurateAIConfig.apiUrl');
+    console.error('[Noeticex] apiUrl is required. Set data-api-url or window.CurateAIConfig.apiUrl');
   }
 
   // Derive cognitoRegion from userPoolId if not explicitly set

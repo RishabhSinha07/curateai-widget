@@ -1,7 +1,7 @@
 import type { CurateAIWidgetConfig } from './types';
 
 export function buildStyles(config: CurateAIWidgetConfig): string {
-  const { primaryColor, accentColor, backgroundColor, assistantBubbleColor, textColor, textSecondaryColor, fontFamily, borderRadius, headerGradient, bubbleSize } = config;
+  const { primaryColor, backgroundColor, assistantBubbleColor, textColor, textSecondaryColor, fontFamily, borderRadius, bubbleSize } = config;
 
   return `
     :host {
@@ -44,8 +44,12 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
     @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    @keyframes tealGlow {
+      0%, 100% { box-shadow: 0 0 8px rgba(16,185,129,0.4); }
+      50% { box-shadow: 0 0 16px rgba(16,185,129,0.6); }
     }
 
     /* ---- Container ---- */
@@ -70,20 +74,20 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       width: ${bubbleSize}px;
       height: ${bubbleSize}px;
       border-radius: 50%;
-      background: ${headerGradient};
+      background: linear-gradient(135deg, #10b981, #059669);
       border: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.16), 0 2px 4px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 20px rgba(16,185,129,0.3), 0 2px 8px rgba(0,0,0,0.3);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
       animation: bounceIn 0.4s ease-out;
       position: relative;
     }
     .cai-bubble:hover {
       transform: scale(1.08);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.2), 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 28px rgba(16,185,129,0.4), 0 2px 12px rgba(0,0,0,0.3);
     }
     .cai-bubble:active { transform: scale(0.95); }
     .cai-bubble svg { width: 28px; height: 28px; fill: none; stroke: #fff; stroke-width: 2; }
@@ -100,7 +104,8 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       max-height: calc(100vh - ${config.offsetY * 2 + bubbleSize + 16}px);
       border-radius: ${borderRadius}px;
       background: ${backgroundColor};
-      box-shadow: 0 8px 40px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+      background-image: radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.12) 0%, transparent 60%);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.08);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -114,7 +119,10 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
 
     /* ---- Header ---- */
     .cai-header {
-      background: ${headerGradient};
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
       color: #fff;
       padding: 16px 20px;
       display: flex;
@@ -122,34 +130,35 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       gap: 12px;
       flex-shrink: 0;
     }
-    .cai-header-icon {
-      width: 36px;
-      height: 36px;
+    .cai-header-dot {
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: ${primaryColor};
       flex-shrink: 0;
+      animation: tealGlow 2s ease-in-out infinite;
     }
-    .cai-header-icon svg { width: 20px; height: 20px; fill: none; stroke: #fff; stroke-width: 2; }
+    .cai-header-icon {
+      display: none;
+    }
     .cai-header-text { flex: 1; min-width: 0; }
     .cai-header-title {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.01em;
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
     }
     .cai-header-subtitle {
       font-size: 12px;
-      opacity: 0.85;
+      color: ${textSecondaryColor};
       margin-top: 2px;
     }
     .cai-header-close {
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      border: none;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -157,7 +166,7 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       transition: background 0.15s;
       flex-shrink: 0;
     }
-    .cai-header-close:hover { background: rgba(255,255,255,0.25); }
+    .cai-header-close:hover { background: rgba(255,255,255,0.15); }
     .cai-header-close svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2.5; }
 
     /* ---- Message List ---- */
@@ -167,12 +176,13 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 16px;
       scroll-behavior: smooth;
     }
     .cai-messages::-webkit-scrollbar { width: 5px; }
     .cai-messages::-webkit-scrollbar-track { background: transparent; }
-    .cai-messages::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+    .cai-messages::-webkit-scrollbar-thumb { background: rgba(16,185,129,0.2); border-radius: 10px; }
+    .cai-messages::-webkit-scrollbar-thumb:hover { background: rgba(16,185,129,0.35); }
 
     /* ---- Message Bubbles ---- */
     .cai-msg {
@@ -184,6 +194,16 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     .cai-msg-user { align-items: flex-end; }
     .cai-msg-assistant { align-items: flex-start; }
 
+    .cai-msg-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: ${textSecondaryColor};
+      margin-bottom: -4px;
+      padding: 0 4px;
+    }
+
     .cai-bubble-wrap {
       max-width: 85%;
       padding: 12px 16px;
@@ -192,38 +212,41 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       word-break: break-word;
     }
     .cai-msg-user .cai-bubble-wrap {
-      background: ${config.userBubbleColor};
+      background: linear-gradient(135deg, #10b981, #059669);
       color: #fff;
-      border-radius: ${borderRadius}px ${borderRadius}px 4px ${borderRadius}px;
+      border-radius: 18px 18px 4px 18px;
     }
     .cai-msg-assistant .cai-bubble-wrap {
       background: ${assistantBubbleColor};
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       color: ${textColor};
-      border-radius: ${borderRadius}px ${borderRadius}px ${borderRadius}px 4px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-      border-left: 3px solid ${primaryColor}33;
+      border-radius: 18px 18px 18px 4px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-left: 3px solid rgba(16,185,129,0.4);
     }
 
     /* ---- Markdown Styles ---- */
     .cai-md p { margin-bottom: 10px; }
     .cai-md p:last-child { margin-bottom: 0; }
-    .cai-md strong { font-weight: 600; }
+    .cai-md strong { font-weight: 600; color: #f1f5f9; }
     .cai-md em { font-style: italic; }
     .cai-md a { color: ${primaryColor}; text-decoration: underline; }
     .cai-md a:hover { opacity: 0.8; }
     .cai-md code {
-      background: rgba(0,0,0,0.06);
+      background: rgba(255,255,255,0.08);
       padding: 1px 5px;
       border-radius: 4px;
       font-family: monospace;
       font-size: 0.9em;
+      color: ${primaryColor};
     }
     .cai-md ul, .cai-md ol { padding-left: 20px; margin-bottom: 10px; }
     .cai-md li { margin-bottom: 4px; }
     .cai-md h1, .cai-md h2, .cai-md h3 {
       color: ${primaryColor};
-      font-weight: 600;
-      letter-spacing: 0.02em;
+      font-weight: 700;
+      letter-spacing: -0.01em;
       margin-top: 12px;
       margin-bottom: 6px;
     }
@@ -303,7 +326,7 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     }
     .cai-products-scroll::-webkit-scrollbar { height: 4px; }
     .cai-products-scroll::-webkit-scrollbar-track { background: transparent; }
-    .cai-products-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+    .cai-products-scroll::-webkit-scrollbar-thumb { background: rgba(16,185,129,0.2); border-radius: 10px; }
     .cai-products-fade {
       position: absolute;
       top: 0; right: 0; bottom: 0;
@@ -318,12 +341,14 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       scroll-snap-align: start;
       width: 180px;
       border-radius: ${Math.max(borderRadius - 4, 8)}px;
-      background: ${assistantBubbleColor};
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 2px 12px rgba(0,0,0,0.04);
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
       animation: revealCard 0.35s ease-out backwards;
       text-decoration: none;
       color: ${textColor};
@@ -331,7 +356,8 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     }
     .cai-product-card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1), 0 1px 4px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 20px rgba(16,185,129,0.15), 0 2px 8px rgba(0,0,0,0.3);
+      border-color: rgba(16,185,129,0.2);
     }
     .cai-product-img {
       width: 100%;
@@ -345,7 +371,7 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, ${primaryColor}15, ${accentColor}12);
+      background: rgba(16,185,129,0.08);
     }
     .cai-product-img-placeholder svg {
       width: 28px; height: 28px;
@@ -365,12 +391,13 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.05em;
-      color: ${accentColor};
+      color: ${primaryColor};
     }
     .cai-product-name {
       font-size: 13px;
       font-weight: 600;
       line-height: 1.3;
+      color: #f1f5f9;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -392,11 +419,12 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       gap: 8px;
       padding-top: 8px;
       margin-top: auto;
-      border-top: 1px solid rgba(0,0,0,0.06);
+      border-top: 1px solid rgba(255,255,255,0.06);
     }
     .cai-product-price {
       font-size: 15px;
       font-weight: 700;
+      color: #f1f5f9;
     }
     .cai-product-cta {
       display: inline-flex;
@@ -406,7 +434,7 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       font-weight: 600;
       padding: 4px 10px;
       border-radius: 20px;
-      background: ${config.userBubbleColor};
+      background: linear-gradient(135deg, #10b981, #059669);
       color: #fff;
       white-space: nowrap;
     }
@@ -424,20 +452,21 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       border-radius: 20px;
       font-size: 13px;
       font-weight: 500;
-      border: 1.5px solid ${primaryColor}40;
-      background: ${primaryColor}10;
+      border: 1px solid rgba(16,185,129,0.2);
+      background: rgba(16,185,129,0.06);
       color: ${primaryColor};
       cursor: pointer;
       transition: all 0.15s ease;
       white-space: nowrap;
     }
     .cai-reply-btn:first-child {
-      border-color: ${primaryColor}60;
-      background: ${primaryColor}18;
+      border-color: rgba(16,185,129,0.35);
+      background: rgba(16,185,129,0.1);
       font-weight: 600;
     }
     .cai-reply-btn:hover {
-      background: ${primaryColor}20;
+      background: rgba(16,185,129,0.15);
+      border-color: rgba(16,185,129,0.4);
       transform: scale(1.03);
     }
     .cai-reply-btn:active { transform: scale(0.97); }
@@ -449,17 +478,19 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       gap: 4px;
       padding: 12px 16px;
       background: ${assistantBubbleColor};
-      border-radius: ${borderRadius}px ${borderRadius}px ${borderRadius}px 4px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 18px 18px 18px 4px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-left: 3px solid rgba(16,185,129,0.4);
       width: fit-content;
-      border-left: 3px solid ${primaryColor}33;
     }
     .cai-typing-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
       background: ${primaryColor};
-      opacity: 0.5;
+      opacity: 0.6;
       animation: bounce 1.2s ease-in-out infinite;
     }
     .cai-typing-dot:nth-child(2) { animation-delay: 0.15s; }
@@ -468,23 +499,25 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     /* ---- Input Area ---- */
     .cai-input-area {
       padding: 12px 16px;
-      border-top: 1px solid rgba(0,0,0,0.06);
-      background: ${backgroundColor};
+      border-top: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       flex-shrink: 0;
     }
     .cai-input-wrap {
       display: flex;
       align-items: center;
       gap: 8px;
-      background: ${assistantBubbleColor};
+      background: rgba(255,255,255,0.06);
       border-radius: ${Math.max(borderRadius - 4, 8)}px;
       padding: 4px 4px 4px 14px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-      border: 1.5px solid transparent;
-      transition: border-color 0.15s;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
     .cai-input-wrap:focus-within {
-      border-color: ${primaryColor}50;
+      border-color: rgba(16,185,129,0.4);
+      box-shadow: 0 0 0 2px rgba(16,185,129,0.1);
     }
     .cai-input {
       flex: 1;
@@ -503,7 +536,7 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: ${headerGradient};
+      background: linear-gradient(135deg, #10b981, #059669);
       border: none;
       cursor: pointer;
       display: flex;
@@ -514,57 +547,106 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     }
     .cai-send-btn:hover { transform: scale(1.08); }
     .cai-send-btn:active { transform: scale(0.95); }
-    .cai-send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .cai-send-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
     .cai-send-btn svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2; }
 
     /* ---- Welcome Screen ---- */
     .cai-welcome {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 40px 24px;
-      gap: 16px;
+      padding: 32px 20px;
+      gap: 8px;
       flex: 1;
+      overflow-y: auto;
     }
-    .cai-welcome-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: ${primaryColor}15;
+    .cai-welcome-title {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #fff;
+      line-height: 1.1;
+    }
+    .cai-welcome-msg {
+      font-size: 15px;
+      color: ${textSecondaryColor};
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .cai-welcome-icon { display: none; }
+
+    .cai-topic-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .cai-topic-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px;
+      background: rgba(255,255,255,0.05);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      width: 100%;
+      font-family: ${fontFamily};
+      color: ${textColor};
+    }
+    .cai-topic-card:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(16,185,129,0.3);
+      transform: translateY(-1px);
+    }
+    .cai-topic-card:active { transform: scale(0.98); }
+    .cai-topic-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(16,185,129,0.12);
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
-    .cai-welcome-icon svg { width: 32px; height: 32px; stroke: ${primaryColor}; fill: none; stroke-width: 1.5; }
-    .cai-welcome-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: ${textColor};
+    .cai-topic-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: ${primaryColor};
+      fill: none;
+      stroke-width: 1.5;
     }
-    .cai-welcome-msg {
+    .cai-topic-text { flex: 1; min-width: 0; }
+    .cai-topic-title {
       font-size: 14px;
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-bottom: 2px;
+    }
+    .cai-topic-desc {
+      font-size: 12px;
       color: ${textSecondaryColor};
-      line-height: 1.6;
-      max-width: 280px;
+      line-height: 1.4;
     }
 
     /* ---- Error Banner ---- */
     .cai-error {
       margin: 0 16px;
       padding: 10px 14px;
-      background: #fef2f2;
-      border: 1px solid #fecaca;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.2);
       border-radius: 8px;
-      color: #b91c1c;
+      color: #fca5a5;
       font-size: 13px;
       display: flex;
       align-items: center;
       gap: 8px;
       animation: fadeIn 0.2s ease-out;
     }
-    .cai-error svg { width: 16px; height: 16px; stroke: #b91c1c; fill: none; stroke-width: 2; flex-shrink: 0; }
+    .cai-error svg { width: 16px; height: 16px; stroke: #fca5a5; fill: none; stroke-width: 2; flex-shrink: 0; }
 
     /* ---- Powered By ---- */
     .cai-powered {
@@ -575,11 +657,11 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     .cai-powered a {
       font-size: 11px;
       color: ${textSecondaryColor};
-      opacity: 0.6;
+      opacity: 0.4;
       text-decoration: none;
       transition: opacity 0.15s;
     }
-    .cai-powered a:hover { opacity: 1; }
+    .cai-powered a:hover { opacity: 0.8; }
 
     /* ---- Login Screen ---- */
     .cai-login {
@@ -597,7 +679,7 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       width: 56px;
       height: 56px;
       border-radius: 50%;
-      background: ${primaryColor}15;
+      background: rgba(16,185,129,0.12);
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -612,9 +694,10 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     }
     .cai-login-title {
       font-size: 20px;
-      font-weight: 700;
-      color: ${textColor};
+      font-weight: 800;
+      color: #fff;
       margin-bottom: 6px;
+      letter-spacing: -0.02em;
     }
     .cai-login-subtitle {
       font-size: 13px;
@@ -624,7 +707,8 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     .cai-login-tabs {
       display: flex;
       gap: 4px;
-      background: rgba(0,0,0,0.04);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
       border-radius: 10px;
       padding: 3px;
       margin-bottom: 20px;
@@ -643,9 +727,9 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       transition: all 0.15s;
     }
     .cai-login-tab.cai-active {
-      background: ${assistantBubbleColor};
+      background: rgba(16,185,129,0.15);
       color: ${primaryColor};
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      box-shadow: none;
     }
     .cai-login-form {
       display: flex;
@@ -655,17 +739,18 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     .cai-login-input {
       width: 100%;
       padding: 12px 14px;
-      border: 1.5px solid rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.1);
       border-radius: 10px;
       font-family: ${fontFamily};
       font-size: 14px;
       color: ${textColor};
-      background: ${assistantBubbleColor};
+      background: rgba(255,255,255,0.05);
       outline: none;
-      transition: border-color 0.15s;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
     .cai-login-input:focus {
-      border-color: ${primaryColor};
+      border-color: rgba(16,185,129,0.5);
+      box-shadow: 0 0 0 2px rgba(16,185,129,0.1);
     }
     .cai-login-input::placeholder {
       color: ${textSecondaryColor};
@@ -676,7 +761,7 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       padding: 12px;
       border: none;
       border-radius: 10px;
-      background: ${headerGradient};
+      background: linear-gradient(135deg, #10b981, #059669);
       color: #fff;
       font-family: ${fontFamily};
       font-size: 14px;
@@ -688,16 +773,16 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     .cai-login-btn:hover { opacity: 0.9; }
     .cai-login-btn:active { transform: scale(0.98); }
     .cai-login-btn:disabled {
-      opacity: 0.5;
+      opacity: 0.4;
       cursor: not-allowed;
       transform: none;
     }
     .cai-login-error {
       padding: 10px 14px;
-      background: #fef2f2;
-      border: 1px solid #fecaca;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.2);
       border-radius: 8px;
-      color: #b91c1c;
+      color: #fca5a5;
       font-size: 13px;
       margin-bottom: 16px;
       line-height: 1.4;
@@ -708,8 +793,8 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      border: none;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -717,7 +802,7 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       transition: background 0.15s;
       flex-shrink: 0;
     }
-    .cai-header-signout:hover { background: rgba(255,255,255,0.25); }
+    .cai-header-signout:hover { background: rgba(255,255,255,0.15); }
     .cai-header-signout svg { width: 16px; height: 16px; stroke: #fff; fill: none; stroke-width: 2; }
 
     /* ---- Mobile Responsive ---- */
