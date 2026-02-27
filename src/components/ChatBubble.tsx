@@ -15,9 +15,16 @@ export function ChatBubble({ isOpen, onClick }: ChatBubbleProps) {
       onClick={onClick}
       aria-label={isOpen ? 'Close chat' : 'Open chat'}
     >
-      {/* Chat icon */}
+      {!isOpen && <div class="cai-bubble-tooltip">Can I help you?</div>}
+      {/* Robot icon */}
       <svg class="cai-chat-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        <rect x="5" y="9" width="14" height="10" rx="2" />
+        <circle cx="9" cy="14" r="1.5" fill="#fff" stroke="none" />
+        <circle cx="15" cy="14" r="1.5" fill="#fff" stroke="none" />
+        <path d="M12 2v4" />
+        <circle cx="12" cy="2" r="1" fill="#fff" stroke="none" />
+        <path d="M2 13v2" />
+        <path d="M22 13v2" />
       </svg>
       {/* Close icon */}
       <svg class="cai-close-icon" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">

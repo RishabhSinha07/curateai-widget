@@ -88,7 +88,7 @@ export function ChatMessage({ message, isLastAssistant, onQuickReply }: ChatMess
   const hasProducts = !!message.products?.length;
   const showBubble = message.content.trim().length > 0;
 
-  const showReplies = !isUser && isLastAssistant && message.suggested_replies?.length;
+  const showReplies = !isUser && isLastAssistant && (message.suggested_replies?.length ?? 0) > 0;
 
   const sections = useMemo(() => {
     if (isUser) return null;

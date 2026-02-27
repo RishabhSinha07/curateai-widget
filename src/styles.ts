@@ -91,6 +91,29 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     }
     .cai-bubble:active { transform: scale(0.95); }
     .cai-bubble svg { width: 28px; height: 28px; fill: none; stroke: #fff; stroke-width: 2; }
+    .cai-bubble-tooltip {
+      position: absolute;
+      bottom: calc(100% + 12px);
+      right: 0;
+      background: #fff;
+      color: #1e293b;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 12px;
+      white-space: nowrap;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+      animation: fadeIn 0.3s ease-out;
+      pointer-events: none;
+    }
+    .cai-bubble-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      right: 24px;
+      border: 6px solid transparent;
+      border-top-color: #fff;
+    }
     .cai-bubble .cai-close-icon { display: none; }
     .cai-bubble.cai-open .cai-chat-icon { display: none; }
     .cai-bubble.cai-open .cai-close-icon { display: block; }
@@ -103,8 +126,9 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       height: ${config.height}px;
       max-height: calc(100vh - ${config.offsetY * 2 + bubbleSize + 16}px);
       border-radius: ${borderRadius}px;
-      background: ${backgroundColor};
-      background-image: radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.12) 0%, transparent 60%);
+      background-color: ${backgroundColor};
+      background-image:
+        radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.12) 0%, transparent 60%);
       box-shadow: 0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.08);
       display: flex;
       flex-direction: column;
