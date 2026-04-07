@@ -32,7 +32,7 @@ const DEFAULTS: Omit<CurateAIWidgetConfig, 'apiUrl'> = {
 
   // Behavior
   openOnLoad: false,
-  persistSession: true,
+  persistSession: false,
   showPoweredBy: true,
 };
 
