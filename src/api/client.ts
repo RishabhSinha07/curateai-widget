@@ -14,6 +14,11 @@ export class CurateAIClient {
       'Content-Type': 'application/json',
     };
 
+    // API key for tenant identification
+    if (this.config.apiKey) {
+      headers['X-API-Key'] = this.config.apiKey;
+    }
+
     // Token priority: static authToken → getAuthToken callback → built-in Cognito token
     let token: string | null = this.config.authToken || null;
     if (!token && this.config.getAuthToken) {

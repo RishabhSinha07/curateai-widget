@@ -3,6 +3,7 @@ import { useState, useMemo } from 'preact/hooks';
 import { renderMarkdown } from '../utils/markdown';
 import { ProductCarousel } from './ProductCarousel';
 import { SuggestedReplies } from './SuggestedReplies';
+import { useConfig } from '../hooks/useConfig';
 import type { Message } from '../types';
 
 interface ChatMessageProps {
@@ -84,6 +85,7 @@ function CollapsibleSection({ section, defaultExpanded }: { section: Section; de
 }
 
 export function ChatMessage({ message, isLastAssistant, onQuickReply }: ChatMessageProps) {
+  const config = useConfig();
   const isUser = message.role === 'user';
   const hasProducts = !!message.products?.length;
   const showBubble = message.content.trim().length > 0;
@@ -102,7 +104,7 @@ export function ChatMessage({ message, isLastAssistant, onQuickReply }: ChatMess
 
   return (
     <div class={`cai-msg ${isUser ? 'cai-msg-user' : 'cai-msg-assistant'}`}>
-      <div class="cai-msg-label">{isUser ? 'You' : '\u2014 Noeticex'}</div>
+      <div class="cai-msg-label">{isUser ? 'You' : config.title}</div>
       {showBubble && (
         <div class="cai-bubble-wrap">
           {sections && !isUser ? (
