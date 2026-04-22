@@ -102,7 +102,7 @@ export function ChatMessage({ message, isLastAssistant, onQuickReply }: ChatMess
 
   return (
     <div class={`cai-msg ${isUser ? 'cai-msg-user' : 'cai-msg-assistant'}`}>
-      <div class="cai-msg-label">{isUser ? 'You' : 'Noeticex'}</div>
+      <div class="cai-msg-label">{isUser ? 'You' : '\u2014 Noeticex'}</div>
       {showBubble && (
         <div class="cai-bubble-wrap">
           {sections && !isUser ? (

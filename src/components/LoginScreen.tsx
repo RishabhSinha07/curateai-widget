@@ -55,16 +55,26 @@ export function LoginScreen({
     if (confirmCode.trim()) onConfirm(confirmCode.trim(), password);
   };
 
+  const sparkIcon = (
+    <svg viewBox="0 0 24 24" fill="none">
+      <defs>
+        <linearGradient id="spark-login" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#FFFDF9"/>
+          <stop offset="1" stop-color="#FBF7F0"/>
+        </linearGradient>
+      </defs>
+      <path d="M12 2 L13.6 9.2 Q13.9 10.5 15 10.8 L22 12 L15 13.2 Q13.9 13.5 13.6 14.8 L12 22 L10.4 14.8 Q10.1 13.5 9 13.2 L2 12 L9 10.8 Q10.1 10.5 10.4 9.2 Z"
+        fill="url(#spark-login)"/>
+      <path d="M19 4 L19.5 6 Q19.6 6.4 20 6.5 L22 7 L20 7.5 Q19.6 7.6 19.5 8 L19 10 L18.5 8 Q18.4 7.6 18 7.5 L16 7 L18 6.5 Q18.4 6.4 18.5 6 Z"
+        fill="rgba(255,253,249,0.85)"/>
+    </svg>
+  );
+
   if (needsConfirmation) {
     return (
       <div class="cai-login">
         <div class="cai-login-header">
-          <div class="cai-login-icon">
-            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 12h-6l-2 3h-4l-2-3H2" />
-              <path d="M5.45 5.11L2 12v6a2 2 0 002 2h16a2 2 0 002-2v-6l-3.45-6.89A2 2 0 0016.76 4H7.24a2 2 0 00-1.79 1.11z" />
-            </svg>
-          </div>
+          <div class="cai-login-icon">{sparkIcon}</div>
           <h2 class="cai-login-title">Check your email</h2>
           <p class="cai-login-subtitle">Enter the confirmation code we sent to verify your account</p>
         </div>
@@ -72,14 +82,17 @@ export function LoginScreen({
         {error && <div class="cai-login-error">{error}</div>}
 
         <form onSubmit={handleConfirm} class="cai-login-form">
-          <input
-            type="text"
-            class="cai-login-input"
-            placeholder="Confirmation code"
-            value={confirmCode}
-            onInput={(e) => setConfirmCode((e.target as HTMLInputElement).value)}
-            autoFocus
-          />
+          <div class="cai-login-field">
+            <div class="cai-login-field-label">Confirmation Code</div>
+            <input
+              type="text"
+              class="cai-login-input"
+              placeholder="Enter code"
+              value={confirmCode}
+              onInput={(e) => setConfirmCode((e.target as HTMLInputElement).value)}
+              autoFocus
+            />
+          </div>
           <button type="submit" class="cai-login-btn" disabled={isLoading || !confirmCode.trim()}>
             {isLoading ? 'Verifying...' : 'Verify account'}
           </button>
@@ -91,15 +104,9 @@ export function LoginScreen({
   return (
     <div class="cai-login">
       <div class="cai-login-header">
-        <div class="cai-login-icon">
-          <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313-12.454z" />
-            <path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0-2 2a2 2 0 0 0-2-2a2 2 0 0 0 2-2" />
-            <path d="M19 11h2m-1-1v2" />
-          </svg>
-        </div>
-        <h2 class="cai-login-title">{config.title}</h2>
-        <p class="cai-login-subtitle">Sign in to get personalized recommendations</p>
+        <div class="cai-login-icon">{sparkIcon}</div>
+        <h2 class="cai-login-title">Welcome back</h2>
+        <p class="cai-login-subtitle">Sign in for recommendations tailored to you.</p>
       </div>
 
       <div class="cai-login-tabs">
@@ -121,21 +128,27 @@ export function LoginScreen({
 
       {tab === 'signin' ? (
         <form onSubmit={handleSignIn} class="cai-login-form">
-          <input
-            type="text"
-            class="cai-login-input"
-            placeholder="Username"
-            value={username}
-            onInput={(e) => setUsername((e.target as HTMLInputElement).value)}
-            autoFocus
-          />
-          <input
-            type="password"
-            class="cai-login-input"
-            placeholder="Password"
-            value={password}
-            onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
-          />
+          <div class="cai-login-field">
+            <div class="cai-login-field-label">Username</div>
+            <input
+              type="text"
+              class="cai-login-input"
+              placeholder="Enter username"
+              value={username}
+              onInput={(e) => setUsername((e.target as HTMLInputElement).value)}
+              autoFocus
+            />
+          </div>
+          <div class="cai-login-field">
+            <div class="cai-login-field-label">Password</div>
+            <input
+              type="password"
+              class="cai-login-input"
+              placeholder="Enter password"
+              value={password}
+              onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
+            />
+          </div>
           <button
             type="submit"
             class="cai-login-btn"
@@ -146,28 +159,37 @@ export function LoginScreen({
         </form>
       ) : (
         <form onSubmit={handleSignUp} class="cai-login-form">
-          <input
-            type="text"
-            class="cai-login-input"
-            placeholder="Username"
-            value={username}
-            onInput={(e) => setUsername((e.target as HTMLInputElement).value)}
-            autoFocus
-          />
-          <input
-            type="email"
-            class="cai-login-input"
-            placeholder="Email"
-            value={email}
-            onInput={(e) => setEmail((e.target as HTMLInputElement).value)}
-          />
-          <input
-            type="password"
-            class="cai-login-input"
-            placeholder="Password"
-            value={password}
-            onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
-          />
+          <div class="cai-login-field">
+            <div class="cai-login-field-label">Username</div>
+            <input
+              type="text"
+              class="cai-login-input"
+              placeholder="Choose username"
+              value={username}
+              onInput={(e) => setUsername((e.target as HTMLInputElement).value)}
+              autoFocus
+            />
+          </div>
+          <div class="cai-login-field">
+            <div class="cai-login-field-label">Email</div>
+            <input
+              type="email"
+              class="cai-login-input"
+              placeholder="Enter email"
+              value={email}
+              onInput={(e) => setEmail((e.target as HTMLInputElement).value)}
+            />
+          </div>
+          <div class="cai-login-field">
+            <div class="cai-login-field-label">Password</div>
+            <input
+              type="password"
+              class="cai-login-input"
+              placeholder="Choose password"
+              value={password}
+              onInput={(e) => setPassword((e.target as HTMLInputElement).value)}
+            />
+          </div>
           <button
             type="submit"
             class="cai-login-btn"

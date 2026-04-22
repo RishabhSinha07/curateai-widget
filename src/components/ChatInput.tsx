@@ -5,9 +5,10 @@ import { useConfig } from '../hooks/useConfig';
 interface ChatInputProps {
   onSend: (message: string) => void;
   isLoading: boolean;
+  showPoweredBy?: boolean;
 }
 
-export function ChatInput({ onSend, isLoading }: ChatInputProps) {
+export function ChatInput({ onSend, isLoading, showPoweredBy }: ChatInputProps) {
   const config = useConfig();
   const [value, setValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -48,11 +49,15 @@ export function ChatInput({ onSend, isLoading }: ChatInputProps) {
           aria-label="Send message"
         >
           <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="22" y1="2" x2="11" y2="13" />
-            <polygon points="22 2 15 22 11 13 2 9 22 2" />
+            <path d="M5 12l14-7-5 14-3-6-6-1z" />
           </svg>
         </button>
       </div>
+      {showPoweredBy && (
+        <div class="cai-powered">
+          Powered by <a href={config.poweredByUrl} target="_blank" rel="noopener noreferrer" class="cai-powered-brand">Noeticex</a>
+        </div>
+      )}
     </div>
   );
 }

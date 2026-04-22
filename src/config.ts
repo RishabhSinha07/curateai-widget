@@ -1,26 +1,26 @@
 import type { CurateAIWidgetConfig } from './types';
 
 const DEFAULTS: Omit<CurateAIWidgetConfig, 'apiUrl'> = {
-  // Theme — dark futuristic with emerald/teal accents
-  primaryColor: '#10b981',
-  accentColor: '#10b981',
-  backgroundColor: '#0b1015',
-  userBubbleColor: '',       // derived as teal gradient if empty
-  assistantBubbleColor: 'rgba(255,255,255,0.06)',
-  textColor: '#e2e8f0',
-  textSecondaryColor: '#94a3b8',
-  fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
-  borderRadius: 16,
-  headerGradient: '',        // derived as dark glass gradient if empty
+  // Theme — warm luxury: ivory, cream, deep plum, warm bronze
+  primaryColor: '#A57548',
+  accentColor: '#A57548',
+  backgroundColor: '#F7F2EA',
+  userBubbleColor: '',       // derived as plum gradient if empty
+  assistantBubbleColor: '#FFFDF9',
+  textColor: '#3B1F2B',
+  textSecondaryColor: 'rgba(59, 31, 43, 0.55)',
+  fontFamily: "'Instrument Sans', ui-sans-serif, system-ui, sans-serif",
+  borderRadius: 24,
+  headerGradient: '',        // derived as paper-to-ivory gradient if empty
 
   // Layout
   position: 'bottom-right',
   offsetX: 20,
   offsetY: 20,
   zIndex: 999999,
-  width: 400,
-  height: 600,
-  bubbleSize: 60,
+  width: 440,
+  height: 720,
+  bubbleSize: 62,
 
   // Content
   title: 'Noeticex',
@@ -75,10 +75,10 @@ export function resolveConfig(): CurateAIWidgetConfig {
 
   // Derive defaults for gradient fields if not set
   if (!merged.userBubbleColor) {
-    merged.userBubbleColor = `linear-gradient(135deg, #10b981, #059669)`;
+    merged.userBubbleColor = `linear-gradient(135deg, #3B1F2B, #2A1620)`;
   }
   if (!merged.headerGradient) {
-    merged.headerGradient = `linear-gradient(135deg, rgba(16,185,129,0.15), rgba(5,150,105,0.08))`;
+    merged.headerGradient = `linear-gradient(180deg, #FFFDF9 0%, #F7F2EA 100%)`;
   }
 
   if (!merged.apiUrl) {

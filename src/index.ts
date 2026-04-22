@@ -4,9 +4,27 @@ import { buildStyles } from './styles';
 import { WidgetRoot } from './components/WidgetRoot';
 import type { CurateAIPublicAPI } from './types';
 
+function injectFonts(): void {
+  if (document.getElementById('curateai-widget-fonts')) return;
+  const preconnect1 = document.createElement('link');
+  preconnect1.rel = 'preconnect';
+  preconnect1.href = 'https://fonts.googleapis.com';
+  const preconnect2 = document.createElement('link');
+  preconnect2.rel = 'preconnect';
+  preconnect2.href = 'https://fonts.gstatic.com';
+  preconnect2.crossOrigin = '';
+  const link = document.createElement('link');
+  link.id = 'curateai-widget-fonts';
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap';
+  document.head.append(preconnect1, preconnect2, link);
+}
+
 function init(): void {
   const config = resolveConfig();
   if (!config.apiUrl) return;
+
+  injectFonts();
 
   // Create host element
   const host = document.createElement('div');

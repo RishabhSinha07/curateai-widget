@@ -7,7 +7,6 @@ import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
 import { WelcomeScreen } from './WelcomeScreen';
 import { ErrorBanner } from './ErrorBanner';
-import { PoweredBy } from './PoweredBy';
 
 interface ChatWindowProps {
   isClosing: boolean;
@@ -44,9 +43,7 @@ export function ChatWindow({ isClosing, onClose, pendingMessage, onPendingConsum
 
       {error && <ErrorBanner message={error} />}
 
-      <ChatInput onSend={sendMessage} isLoading={isLoading} />
-
-      {config.showPoweredBy && <PoweredBy />}
+      <ChatInput onSend={sendMessage} isLoading={isLoading} showPoweredBy={config.showPoweredBy} />
     </div>
   );
 }
