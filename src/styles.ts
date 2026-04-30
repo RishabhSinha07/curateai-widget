@@ -154,7 +154,6 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     .cai-bubble-tooltip {
       position: absolute;
       bottom: calc(100% + 12px);
-      right: -8px;
       background: ${paper};
       color: ${plum};
       font-family: ${serif};
@@ -169,14 +168,17 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       animation: fadeIn 0.3s ease-out;
       pointer-events: none;
     }
+    .cai-container.cai-bottom-right .cai-bubble-tooltip { right: -8px; }
+    .cai-container.cai-bottom-left .cai-bubble-tooltip { left: -8px; }
     .cai-bubble-tooltip::after {
       content: '';
       position: absolute;
       top: 100%;
-      right: 24px;
       border: 6px solid transparent;
       border-top-color: ${paper};
     }
+    .cai-container.cai-bottom-right .cai-bubble-tooltip::after { right: 24px; }
+    .cai-container.cai-bottom-left .cai-bubble-tooltip::after { left: 24px; }
     .cai-bubble .cai-chat-icon {
       opacity: 1;
       transform: rotate(0deg) scale(1);

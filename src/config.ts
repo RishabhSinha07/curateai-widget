@@ -14,7 +14,7 @@ const DEFAULTS: Omit<CurateAIWidgetConfig, 'apiUrl'> = {
   headerGradient: '',        // derived as paper-to-ivory gradient if empty
 
   // Layout
-  position: 'bottom-right',
+  position: 'bottom-left',
   offsetX: 20,
   offsetY: 20,
   zIndex: 999999,
