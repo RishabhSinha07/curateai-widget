@@ -1,18 +1,25 @@
 import { h } from 'preact';
-import { useConfig } from '../hooks/useConfig';
 
 interface ChatBubbleProps {
   isOpen: boolean;
-  onClick: () => void;
+  isDragging: boolean;
+  style?: h.JSX.CSSProperties;
+  onPointerDown: (e: PointerEvent) => void;
+  onKeyActivate: () => void;
 }
 
-export function ChatBubble({ isOpen, onClick }: ChatBubbleProps) {
-  const config = useConfig();
-
+export function ChatBubble({ isOpen, isDragging, style, onPointerDown, onKeyActivate }: ChatBubbleProps) {
   return (
     <button
-      class={`cai-bubble ${isOpen ? 'cai-open' : ''}`}
-      onClick={onClick}
+      class={`cai-bubble ${isOpen ? 'cai-open' : ''} ${isDragging ? 'cai-dragging' : ''}`}
+      style={style}
+      onPointerDown={onPointerDown}
+      onKeyDown={(e: KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onKeyActivate();
+        }
+      }}
       aria-label={isOpen ? 'Close chat' : 'Open chat'}
     >
       {!isOpen && <div class="cai-bubble-tooltip">How may I help you?</div>}

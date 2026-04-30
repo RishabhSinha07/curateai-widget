@@ -107,6 +107,9 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       z-index: 2;
       padding: 0;
       background: radial-gradient(circle at 30% 28%, ${rose}, ${bronze} 55%, ${bronzeDark});
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
     }
     .cai-container.cai-bottom-right .cai-bubble {
       bottom: ${config.offsetY}px;
@@ -132,6 +135,13 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       box-shadow: 0 14px 36px -8px rgba(165,117,72,0.7);
     }
     .cai-bubble:active { transform: scale(0.95); }
+    .cai-bubble.cai-dragging {
+      cursor: grabbing;
+      transform: scale(1.05);
+      transition: none;
+    }
+    .cai-bubble.cai-dragging:hover { transform: scale(1.05); }
+    .cai-bubble.cai-dragging .cai-bubble-tooltip { display: none; }
     .cai-bubble .cai-chat-icon,
     .cai-bubble .cai-close-icon {
       width: 28px;
@@ -1067,6 +1077,11 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
         height: 100% !important;
         max-height: 100vh !important;
         border-radius: 0;
+      }
+      /* Lift FAB above host site's bottom nav bar on mobile */
+      .cai-container.cai-bottom-right .cai-bubble,
+      .cai-container.cai-bottom-left .cai-bubble {
+        bottom: ${config.offsetY + 80}px;
       }
     }
   `;

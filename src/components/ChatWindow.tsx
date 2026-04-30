@@ -15,9 +15,10 @@ interface ChatWindowProps {
   onPendingConsumed: () => void;
   onSignOut?: () => void;
   getCognitoToken?: () => Promise<string | null>;
+  style?: h.JSX.CSSProperties;
 }
 
-export function ChatWindow({ isClosing, onClose, pendingMessage, onPendingConsumed, onSignOut, getCognitoToken }: ChatWindowProps) {
+export function ChatWindow({ isClosing, onClose, pendingMessage, onPendingConsumed, onSignOut, getCognitoToken, style }: ChatWindowProps) {
   const config = useConfig();
   const { messages, isLoading, error, sendMessage, clearChat } = useChat(config, getCognitoToken);
 
@@ -32,7 +33,7 @@ export function ChatWindow({ isClosing, onClose, pendingMessage, onPendingConsum
   const hasMessages = messages.length > 0;
 
   return (
-    <div class={`cai-window ${isClosing ? 'cai-closing' : ''}`}>
+    <div class={`cai-window ${isClosing ? 'cai-closing' : ''}`} style={style}>
       <ChatHeader onClose={onClose} onSignOut={onSignOut} />
 
       {!hasMessages && !isLoading ? (
