@@ -21,6 +21,9 @@ function injectFonts(): void {
 }
 
 function init(): void {
+  // Guard against multiple initializations (script loaded twice, SPA re-injection, etc.)
+  if (document.getElementById('curateai-widget-host') || (window as any).CurateAI) return;
+
   const config = resolveConfig();
   if (!config.apiUrl) return;
 
