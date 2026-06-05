@@ -61,19 +61,40 @@ function parseDataAttributes(script: HTMLScriptElement): Partial<CurateAIWidgetC
   return config as Partial<CurateAIWidgetConfig>;
 }
 
-/** Deep-merge config sources: defaults ← data-attrs ← window.CurateAIConfig */
-export function resolveConfig(): CurateAIWidgetConfig {
+/** Merge local config sources only: defaults ← data-attrs ← window.CurateAIConfig.
+ * Does NOT apply derivations — call `finalizeConfig` after any remote overrides.
+ */
+export function resolveLocalConfig(): CurateAIWidgetConfig {
   const script = document.currentScript as HTMLScriptElement | null;
   const dataAttrs = script ? parseDataAttributes(script) : {};
   const windowConfig = (window as any).CurateAIConfig as Partial<CurateAIWidgetConfig> | undefined;
 
-  const merged = {
+  return {
     ...DEFAULTS,
     ...dataAttrs,
     ...(windowConfig || {}),
   } as CurateAIWidgetConfig;
+}
 
-  // Derive defaults for gradient fields if not set
+/** Merge a partial remote config over a base config, dropping empty/undefined fields
+ * so the backend can omit values without clobbering local ones with blanks. */
+export function mergeRemoteConfig(
+  base: CurateAIWidgetConfig,
+  remote: Partial<CurateAIWidgetConfig>,
+): CurateAIWidgetConfig {
+  const cleaned: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(remote)) {
+    if (value === undefined || value === null || value === '') continue;
+    cleaned[key] = value;
+  }
+  return { ...base, ...cleaned } as CurateAIWidgetConfig;
+}
+
+/** Derive gradient defaults, cognito region, and requireAuth flag.
+ * Run once after local + remote merge, before passing config to the renderer. */
+export function finalizeConfig(config: CurateAIWidgetConfig): CurateAIWidgetConfig {
+  const merged = { ...config };
+
   if (!merged.userBubbleColor) {
     merged.userBubbleColor = `linear-gradient(135deg, #3B1F2B, #2A1620)`;
   }
@@ -85,18 +106,22 @@ export function resolveConfig(): CurateAIWidgetConfig {
     console.error('[Noeticex] apiUrl is required. Set data-api-url or window.CurateAIConfig.apiUrl');
   }
 
-  // Derive cognitoRegion from userPoolId if not explicitly set
   if (merged.cognitoUserPoolId && !merged.cognitoRegion) {
     const match = merged.cognitoUserPoolId.match(/^([a-z]+-[a-z]+-\d+)_/);
     if (match) merged.cognitoRegion = match[1];
   }
 
-  // Default requireAuth to true when cognito config is present
   if (merged.requireAuth === undefined && merged.cognitoUserPoolId && merged.cognitoClientId) {
     merged.requireAuth = true;
   }
 
   return merged;
+}
+
+/** Legacy single-shot resolver: local sources merged and finalized.
+ * Kept for callers that don't need backend theming. */
+export function resolveConfig(): CurateAIWidgetConfig {
+  return finalizeConfig(resolveLocalConfig());
 }
 
 /** Lighten a hex color by a percentage */

@@ -1,8 +1,11 @@
 import { render, h } from 'preact';
-import { resolveConfig } from './config';
+import { resolveLocalConfig, mergeRemoteConfig, finalizeConfig } from './config';
+import { fetchWidgetConfig } from './api/widgetConfig';
 import { buildStyles } from './styles';
 import { WidgetRoot } from './components/WidgetRoot';
 import type { CurateAIPublicAPI } from './types';
+
+const DEFAULT_CONFIG_FETCH_TIMEOUT_MS = 3000;
 
 function injectFonts(): void {
   if (document.getElementById('curateai-widget-fonts')) return;
@@ -20,12 +23,25 @@ function injectFonts(): void {
   document.head.append(preconnect1, preconnect2, link);
 }
 
-function init(): void {
+async function init(): Promise<void> {
   // Guard against multiple initializations (script loaded twice, SPA re-injection, etc.)
   if (document.getElementById('curateai-widget-host') || (window as any).CurateAI) return;
 
-  const config = resolveConfig();
-  if (!config.apiUrl) return;
+  const localConfig = resolveLocalConfig();
+  if (!localConfig.apiUrl) {
+    // finalizeConfig logs the error; bail before doing more work
+    finalizeConfig(localConfig);
+    return;
+  }
+
+  // Pull tenant-specific theme from backend when clientId is set.
+  // Backend values override local; empty/missing values fall through to local.
+  let remoteTheme = {};
+  if (localConfig.clientId) {
+    const timeoutMs = localConfig.configFetchTimeoutMs ?? DEFAULT_CONFIG_FETCH_TIMEOUT_MS;
+    remoteTheme = await fetchWidgetConfig(localConfig.apiUrl, localConfig.clientId, timeoutMs);
+  }
+  const config = finalizeConfig(mergeRemoteConfig(localConfig, remoteTheme));
 
   injectFonts();
 
@@ -66,7 +82,9 @@ function init(): void {
 
 // Auto-initialize when script loads
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', () => {
+    void init();
+  });
 } else {
-  init();
+  void init();
 }

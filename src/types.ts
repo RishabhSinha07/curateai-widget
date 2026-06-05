@@ -35,6 +35,12 @@ export interface CurateAIWidgetConfig {
   // Required
   apiUrl: string;
 
+  // Tenant identifier — used to fetch /widget/config for backend-driven theming
+  clientId?: string;
+
+  // How long (ms) to wait for /widget/config before mounting with local config
+  configFetchTimeoutMs?: number;
+
   // Auth
   authToken?: string;
   getAuthToken?: () => Promise<string> | string;
