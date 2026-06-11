@@ -13,6 +13,9 @@ export interface ProductRecommendation {
 export interface ChatResponse {
   session_id: string;
   response: string;
+  // Backend statuses include "active", "collecting_info", "awaiting_slot",
+  // "completed", "fallback_conversation", and "auth_required" (lead-capture
+  // gate fired — widget should show the registration form).
   status: string;
   products: ProductRecommendation[];
   suggested_replies?: string[];
@@ -21,6 +24,14 @@ export interface ChatResponse {
 export interface ChatRequest {
   message: string;
   session_id?: string;
+  anonymous_id?: string;
+}
+
+export interface RegisterRequest {
+  anonymous_id: string;
+  name: string;
+  email: string;
+  phone: string;
 }
 
 export interface Message {

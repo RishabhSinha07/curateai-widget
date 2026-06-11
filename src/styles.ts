@@ -721,6 +721,72 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     .cai-send-btn:not(:disabled):active { transform: scale(0.95); }
     .cai-send-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.8; }
 
+    /* ---- Lead Capture Form ---- */
+    .cai-lead-form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px 18px 18px;
+      border-top: 1px solid ${line};
+      background: ${paper};
+      flex-shrink: 0;
+    }
+    .cai-lead-heading {
+      font-family: ${serif};
+      font-size: 18px;
+      color: ${plum};
+      line-height: 1.2;
+    }
+    .cai-lead-sub {
+      font-size: 12px;
+      color: ${mute};
+      margin-bottom: 4px;
+    }
+    .cai-lead-input {
+      width: 100%;
+      border: 1px solid ${line};
+      background: ${cream};
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: ${sans};
+      font-size: 13.5px;
+      color: ${plum};
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .cai-lead-input::placeholder { color: ${muteSoft}; }
+    .cai-lead-input:focus {
+      border-color: ${bronze};
+      box-shadow: 0 0 0 2px rgba(165,117,72,0.1);
+    }
+    .cai-lead-input:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+    .cai-lead-submit {
+      margin-top: 4px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 12px;
+      font-family: ${sans};
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: transform 0.15s, opacity 0.15s;
+    }
+    .cai-lead-submit:not(:disabled) {
+      background: linear-gradient(135deg, ${bronze}, ${bronzeDark});
+      color: ${paper};
+      box-shadow: 0 2px 6px rgba(165,117,72,0.35);
+    }
+    .cai-lead-submit:disabled {
+      background: ${cream2};
+      color: ${muteSoft};
+      cursor: not-allowed;
+    }
+    .cai-lead-submit:not(:disabled):hover { transform: translateY(-1px); }
+    .cai-lead-submit:not(:disabled):active { transform: translateY(0); }
+
     /* ---- Welcome Screen ---- */
     .cai-welcome {
       display: flex;

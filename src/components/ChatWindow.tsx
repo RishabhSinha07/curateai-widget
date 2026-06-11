@@ -7,6 +7,7 @@ import { MessageList } from './MessageList';
 import { ChatInput } from './ChatInput';
 import { WelcomeScreen } from './WelcomeScreen';
 import { ErrorBanner } from './ErrorBanner';
+import { LeadCaptureForm } from './LeadCaptureForm';
 
 interface ChatWindowProps {
   isClosing: boolean;
@@ -20,7 +21,15 @@ interface ChatWindowProps {
 
 export function ChatWindow({ isClosing, onClose, pendingMessage, onPendingConsumed, onSignOut, getCognitoToken, style }: ChatWindowProps) {
   const config = useConfig();
-  const { messages, isLoading, error, sendMessage, clearChat } = useChat(config, getCognitoToken);
+  const {
+    messages,
+    isLoading,
+    error,
+    sendMessage,
+    awaitingRegistration,
+    register,
+    isRegistering,
+  } = useChat(config, getCognitoToken);
 
   // Handle programmatic sendMessage
   useEffect(() => {
@@ -44,7 +53,11 @@ export function ChatWindow({ isClosing, onClose, pendingMessage, onPendingConsum
 
       {error && <ErrorBanner message={error} />}
 
-      <ChatInput onSend={sendMessage} isLoading={isLoading} showPoweredBy={config.showPoweredBy} />
+      {awaitingRegistration ? (
+        <LeadCaptureForm onSubmit={register} isSubmitting={isRegistering} />
+      ) : (
+        <ChatInput onSend={sendMessage} isLoading={isLoading} showPoweredBy={config.showPoweredBy} />
+      )}
     </div>
   );
 }
