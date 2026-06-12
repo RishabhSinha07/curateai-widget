@@ -1,25 +1,36 @@
 import type { CurateAIWidgetConfig } from './types';
 
 export function buildStyles(config: CurateAIWidgetConfig): string {
-  const { primaryColor, backgroundColor, assistantBubbleColor, textColor, textSecondaryColor, fontFamily, borderRadius, bubbleSize } = config;
+  const { fontFamily, borderRadius, bubbleSize } = config;
 
-  // Warm luxury design tokens
-  const ivory = '#F7F2EA';
-  const cream = '#FBF7F0';
-  const cream2 = '#F1E9DC';
-  const paper = '#FFFDF9';
-  const plum = '#3B1F2B';
-  const plumDeep = '#2A1620';
-  const plumSoft = '#5E3A4A';
-  const bronze = '#A57548';
-  const bronzeDark = '#8A5E37';
-  const rose = '#C9A89A';
-  const roseLight = '#E8D5C9';
-  const line = 'rgba(59, 31, 43, 0.10)';
-  const lineStrong = 'rgba(59, 31, 43, 0.18)';
-  const mute = 'rgba(59, 31, 43, 0.55)';
-  const muteSoft = 'rgba(59, 31, 43, 0.35)';
-  const errorColor = '#9C3A3A';
+  // Design tokens, each derived from config with warm-luxury defaults so
+  // existing tenants render unchanged when they don't pass theme overrides.
+  // Token names are kept (ivory/plum/bronze/...) to minimize churn against
+  // the ~140 references below; functionally they are semantic slots.
+  const ivory       = config.backgroundColor    || '#F7F2EA'; // window/page bg
+  const cream       = config.surfaceColor       || '#FBF7F0'; // chip/panel surface
+  const cream2      = config.surfaceAltColor    || '#F1E9DC'; // alt surface / hover
+  const paper       = config.paperColor         || config.assistantBubbleColor || '#FFFDF9';
+  const plum        = config.textColor          || '#3B1F2B'; // primary text
+  const plumDeep    = config.textColorDeep      || '#2A1620'; // darkest text / user-bubble tail
+  const plumSoft    = config.textColorSoft      || '#5E3A4A'; // softer text
+  const bronze      = config.primaryColor       || '#A57548'; // primary brand
+  const bronzeDark  = config.primaryDarkColor   || '#8A5E37'; // primary hover / border
+  const rose        = config.accentColor        || '#C9A89A'; // secondary accent
+  const roseLight   = config.accentLightColor   || '#E8D5C9'; // soft accent fill
+  const line        = config.borderColor        || 'rgba(59, 31, 43, 0.10)';
+  const lineStrong  = config.borderColorStrong  || 'rgba(59, 31, 43, 0.18)';
+  const mute        = config.textSecondaryColor || 'rgba(59, 31, 43, 0.55)';
+  const muteSoft    = config.textMuteSoftColor  || 'rgba(59, 31, 43, 0.35)';
+  const errorColor  = config.errorColor         || '#9C3A3A';
+
+  // Composite tokens that some elements use directly; if config supplies an
+  // explicit value, honor it, else fall back to a derivation against the
+  // current palette (not hardcoded warm-luxury values) so re-themes stay
+  // internally consistent.
+  const userBubbleBg     = config.userBubbleColor      || `linear-gradient(135deg, ${plum}, ${plumDeep})`;
+  const assistantBubbleBg = config.assistantBubbleColor || paper;
+  const headerBg         = config.headerGradient       || `linear-gradient(180deg, ${paper} 0%, ${ivory} 100%)`;
 
   const serif = '"Cormorant Garamond", "EB Garamond", Georgia, serif';
   const sans = fontFamily;
@@ -244,7 +255,7 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
 
     /* ---- Header ---- */
     .cai-header {
-      background: linear-gradient(180deg, ${paper} 0%, ${ivory} 100%);
+      background: ${headerBg};
       border-bottom: 1px solid ${line};
       color: ${plum};
       padding: 18px 20px 16px;
@@ -373,13 +384,13 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
       word-break: break-word;
     }
     .cai-msg-user .cai-bubble-wrap {
-      background: linear-gradient(135deg, ${plum}, ${plumDeep});
+      background: ${userBubbleBg};
       color: ${cream};
       border-radius: 18px 18px 4px 18px;
       box-shadow: 0 2px 8px rgba(59,31,43,0.15);
     }
     .cai-msg-assistant .cai-bubble-wrap {
-      background: ${paper};
+      background: ${assistantBubbleBg};
       color: ${plum};
       border-radius: 18px 18px 18px 4px;
       border: 1px solid ${line};

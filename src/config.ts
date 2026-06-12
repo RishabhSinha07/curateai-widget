@@ -91,16 +91,14 @@ export function mergeRemoteConfig(
 }
 
 /** Derive gradient defaults, cognito region, and requireAuth flag.
- * Run once after local + remote merge, before passing config to the renderer. */
+ * Run once after local + remote merge, before passing config to the renderer.
+ *
+ * Note on bubble/header derivations: when the user does NOT supply an explicit
+ * userBubbleColor / headerGradient, styles.ts derives them from the active
+ * textColor / paperColor / backgroundColor so the look stays internally
+ * consistent across themes. We deliberately do NOT pre-fill those here. */
 export function finalizeConfig(config: CurateAIWidgetConfig): CurateAIWidgetConfig {
   const merged = { ...config };
-
-  if (!merged.userBubbleColor) {
-    merged.userBubbleColor = `linear-gradient(135deg, #3B1F2B, #2A1620)`;
-  }
-  if (!merged.headerGradient) {
-    merged.headerGradient = `linear-gradient(180deg, #FFFDF9 0%, #F7F2EA 100%)`;
-  }
 
   if (!merged.apiUrl) {
     console.error('[Noeticex] apiUrl is required. Set data-api-url or window.CurateAIConfig.apiUrl');
