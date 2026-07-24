@@ -1,5 +1,10 @@
 import type { CurateAIWidgetConfig } from './types';
 
+// Below this viewport width the chat window goes full-screen and the bubble
+// is pinned (dragging disabled). Keep in sync with the @media query below
+// and the matchMedia check in WidgetRoot.
+export const MOBILE_BREAKPOINT = 448;
+
 export function buildStyles(config: CurateAIWidgetConfig): string {
   const { fontFamily, borderRadius, bubbleSize } = config;
 
@@ -1146,19 +1151,35 @@ export function buildStyles(config: CurateAIWidgetConfig): string {
     .cai-header-signout svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.6; }
 
     /* ---- Mobile Responsive ---- */
-    @media (max-width: 448px) {
+    @media (max-width: ${MOBILE_BREAKPOINT}px) {
+      /* !important on the placement props so a persisted drag position
+         (applied as inline styles) can never displace the full-screen
+         window or the pinned bubble on phones. */
       .cai-window {
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
         width: 100% !important;
         height: 100% !important;
         max-height: 100vh !important;
         border-radius: 0;
       }
-      /* Lift FAB above host site's bottom nav bar on mobile */
-      .cai-container.cai-bottom-right .cai-bubble,
-      .cai-container.cai-bottom-left .cai-bubble {
-        bottom: ${config.offsetY + 80}px;
+      /* Pin the bubble bottom-left, lifted above host site's bottom nav bar */
+      .cai-bubble {
+        top: auto !important;
+        right: auto !important;
+        left: ${config.offsetX}px !important;
+        bottom: ${config.offsetY + 80}px !important;
+      }
+      .cai-bubble-tooltip {
+        left: -8px !important;
+        right: auto !important;
+      }
+      .cai-bubble-tooltip::after {
+        left: 24px !important;
+        right: auto !important;
       }
     }
   `;

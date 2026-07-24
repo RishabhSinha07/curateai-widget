@@ -12,6 +12,8 @@ interface UseDraggableOptions {
   size: number;
   margin?: number;
   onClick: () => void;
+  /** When false, dragging is disabled and any persisted position is ignored; taps still trigger onClick. */
+  enabled?: boolean;
 }
 
 interface UseDraggableResult {
@@ -32,7 +34,7 @@ function loadPersisted(): DragPosition | null {
   return null;
 }
 
-export function useDraggable({ size, margin = 8, onClick }: UseDraggableOptions): UseDraggableResult {
+export function useDraggable({ size, margin = 8, onClick, enabled = true }: UseDraggableOptions): UseDraggableResult {
   const [position, setPosition] = useState<DragPosition | null>(loadPersisted);
   const [isDragging, setIsDragging] = useState(false);
   const dragRef = useRef<{
@@ -56,7 +58,7 @@ export function useDraggable({ size, margin = 8, onClick }: UseDraggableOptions)
 
   const handlePointerMove = useCallback((e: PointerEvent) => {
     const drag = dragRef.current;
-    if (!drag || e.pointerId !== drag.pointerId) return;
+    if (!drag || e.pointerId !== drag.pointerId || !enabled) return;
     const dx = e.clientX - drag.startX;
     const dy = e.clientY - drag.startY;
     if (!drag.moved && Math.hypot(dx, dy) > DRAG_THRESHOLD) {
@@ -67,7 +69,7 @@ export function useDraggable({ size, margin = 8, onClick }: UseDraggableOptions)
       e.preventDefault();
       setPosition(clamp(drag.originLeft + dx, drag.originTop + dy));
     }
-  }, [clamp]);
+  }, [clamp, enabled]);
 
   const handlePointerUp = useCallback((e: PointerEvent) => {
     const drag = dragRef.current;
@@ -120,5 +122,5 @@ export function useDraggable({ size, margin = 8, onClick }: UseDraggableOptions)
     return () => window.removeEventListener('resize', onResize);
   }, [clamp]);
 
-  return { position, isDragging, onPointerDown };
+  return { position: enabled ? position : null, isDragging, onPointerDown };
 }

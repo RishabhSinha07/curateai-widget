@@ -3,6 +3,7 @@ import { useState, useCallback, useEffect, useMemo } from 'preact/hooks';
 import { ConfigContext } from '../hooks/useConfig';
 import { useAuth } from '../hooks/useAuth';
 import { useDraggable, DragPosition } from '../hooks/useDraggable';
+import { MOBILE_BREAKPOINT } from '../styles';
 import { ChatBubble } from './ChatBubble';
 import { ChatWindow } from './ChatWindow';
 import { LoginScreen } from './LoginScreen';
@@ -33,6 +34,19 @@ function computeWindowStyle(pos: DragPosition, bubbleSize: number): h.JSX.CSSPro
     style.left = 'auto';
   }
   return style;
+}
+
+function useIsMobile(): boolean {
+  const [isMobile, setIsMobile] = useState(
+    () => window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches
+  );
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`);
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+  return isMobile;
 }
 
 interface WidgetRootProps {
@@ -70,9 +84,14 @@ export function WidgetRoot({ config, onApiReady }: WidgetRootProps) {
     else if (!isOpen) open();
   }, [isOpen, isClosing, open, close]);
 
+  // On phones the window is always full-screen and the bubble is pinned
+  // bottom-left, so dragging is disabled and any persisted position ignored.
+  const isMobile = useIsMobile();
+
   const { position: dragPos, isDragging, onPointerDown } = useDraggable({
     size: config.bubbleSize,
     onClick: toggle,
+    enabled: !isMobile,
   });
 
   const bubbleStyle = useMemo<h.JSX.CSSProperties | undefined>(() => {
